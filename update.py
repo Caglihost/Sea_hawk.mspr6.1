@@ -26,6 +26,15 @@ def check_for_update(current_version):
         print("Erreur lors de la vérification de la mise à jour :", e)
         return None
 
+def find_file(root, filename):
+    """
+    Recherche récursive du fichier filename à partir du dossier root.
+    """
+    for path, dirs, files in os.walk(root):
+        if filename in files:
+            return os.path.join(path, filename)
+    return None
+
 def perform_update(release_data):
     assets = release_data.get("assets", [])
     if not assets:
@@ -49,23 +58,17 @@ def perform_update(release_data):
             with zipfile.ZipFile(io.BytesIO(response.content)) as z:
                 z.extractall(temp_folder)
 
-            # Vérifier si l'extraction a créé un dossier racine unique
-            extracted_items = os.listdir(temp_folder)
-            if len(extracted_items) == 1 and os.path.isdir(os.path.join(temp_folder, extracted_items[0])):
-                temp_folder = os.path.join(temp_folder, extracted_items[0])
-
-            # Copie des fichiers mis à jour dans le dossier de l'application
-            for root, dirs, files in os.walk(temp_folder):
-                for file in files:
-                    src_file = os.path.join(root, file)
-                    relative_path = os.path.relpath(src_file, temp_folder)
-                    dest_file = os.path.join(APP_DIR, relative_path)
-                    os.makedirs(os.path.dirname(dest_file), exist_ok=True)
-                    shutil.copy2(src_file, dest_file)
+            # Recherche récursive de main.py
+            src_main = find_file(temp_folder, "main.py")
+            if src_main:
+                dest_main = os.path.join(APP_DIR, "main.py")
+                shutil.copy2(src_main, dest_main)
+                print("Mise à jour de main.py téléchargée et installée.")
+            else:
+                print("Fichier main.py non trouvé dans la mise à jour.")
 
             # Nettoyage du dossier temporaire
-            shutil.rmtree(os.path.join(APP_DIR, "update_temp"), ignore_errors=True)
-            print("Mise à jour téléchargée et installée.")
+            shutil.rmtree(temp_folder, ignore_errors=True)
 
             # Redémarrage de l'application mise à jour
             print("Redémarrage de l'application...")
@@ -75,3 +78,13 @@ def perform_update(release_data):
             print("Erreur lors du téléchargement de la mise à jour.")
     except Exception as e:
         print("Erreur lors de la mise à jour :", e)
+
+if __name__ == "__main__":
+    CURRENT_VERSION = "1.1"  # Version actuelle
+    release_data = check_for_update(CURRENT_VERSION)
+    if release_data:
+        print("Mise à jour disponible. Mise à jour en cours...")
+        perform_update(release_data)
+    else:
+        print("Aucune mise à jour disponible.")
+
