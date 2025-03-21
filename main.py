@@ -15,7 +15,7 @@ import shutil # Importation du module shutil pour les opérations de fichiers
 import sys  # Nécessaire pour lancer update.py et quitter l'application
 
 # Application version
-APP_VERSION = "1.2.6"
+APP_VERSION = "1.2.7"
 
 def check_for_update():
     url = "https://api.github.com/repos/Caglihost/Sea_hawk.mspr6.1/releases/latest"
