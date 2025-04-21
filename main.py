@@ -15,10 +15,10 @@ import shutil # Importation du module shutil pour les opérations de fichiers
 import sys  # Nécessaire pour lancer update.py et quitter l'application
 
 # Application version
-APP_VERSION = "1.2.7"
+APP_VERSION = "1.2.5"
 
 def check_for_update():
-    url = "https://api.github.com/repos/Caglihost/Sea_hawk.mspr6.1/releases/latest"
+    url = "https://192.168.1.3/mspr/Sea_hawk2.git"
     try:
         response = requests.get(url)
         if response.status_code == 200:
@@ -83,9 +83,9 @@ def perform_update(release_data):
 
 # Configuration de la base de données MariaDB
 db_config = {
-    "user": "root",
-    "password": "admin",
-    "host": "127.0.0.1",
+    "user": "netuser",
+    "password": "NetMon123!",
+    "host": "192.168.1.2",
     "port": 3306,
     "database": "network_db"
 }
@@ -148,11 +148,15 @@ def scan_network(network_range):
                 host for host in all_hosts
                 if scan_result['scan'][host].get('status', {}).get('state') == 'up'
             ]
+            inactive_hosts = [
+                host for host in all_hosts
+                if scan_result['scan'][host].get('status', {}).get('state') != 'up'
+            ]
             total_hosts = len(active_hosts)
             num_machines_label.config(text=f"Machines trouvées : {total_hosts}")
             if total_hosts == 0:
                 results_text.insert(tk.END, "Aucun hôte actif trouvé sur ce réseau.\n")
-                return
+
             local_hostname = socket.gethostname()
             for i, host in enumerate(active_hosts, start=1):
                 status = scan_result['scan'][host].get('status', {}).get('state', 'Inconnu')
@@ -160,6 +164,12 @@ def scan_network(network_range):
                 update_progress(i, total_hosts)
             progress_label.config(text="Scan des ports en cours...")
             scan_ports_parallel(scanner, active_hosts)
+
+            # Affichage des hôtes inaccessibles
+            for i, host in enumerate(inactive_hosts, start=1):
+                status = scan_result['scan'][host].get('status', {}).get('state', 'Inaccessible')
+                tree.insert("", "end", values=(host, local_hostname, status, "Aucun port ouvert"))
+            
         except Exception as e:
             results_text.insert(tk.END, f"Erreur : {e}\n")
         finally:
