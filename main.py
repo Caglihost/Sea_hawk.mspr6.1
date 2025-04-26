@@ -15,7 +15,7 @@ import shutil # Importation du module shutil pour les opérations de fichiers
 import sys  # Nécessaire pour lancer update.py et quitter l'application
 
 # Application version
-APP_VERSION = "1.2.5"
+APP_VERSION = "1.2.9"
 
 def check_for_update():
     url = "https://192.168.1.3/mspr/Sea_hawk2.git"
