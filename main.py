@@ -18,7 +18,7 @@ import sys  # Nécessaire pour lancer update.py et quitter l'application
 APP_VERSION = "1.2.10"
 
 def check_for_update():
-    url = "https://192.168.1.3/api/v4/projects/mspr%2FSea_hawk2/releases"
+    url = "https://api.github.com/repos/Caglihost/Sea_hawk.mspr6.1/releases/latest"
     try:
         response = requests.get(url)
         if response.status_code == 200:
