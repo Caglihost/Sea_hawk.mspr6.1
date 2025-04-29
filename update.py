@@ -11,7 +11,7 @@ APP_DIR = os.path.dirname(os.path.abspath(__file__))
 # Nom du script principal à redémarrer (à adapter si besoin)
 APP_EXECUTABLE = "main.py"
 # URL de l'API GitHub pour récupérer la dernière release
-GITHUB_API_URL = "http://192.168.1.3/api/v4/projects/mspr%2FSea_hawk/releases"
+GITHUB_API_URL = "https://api.github.com/repos/Caglihost/Sea_hawk.mspr6.1/releases/latest"
 
 def check_for_update(current_version):
     try:
