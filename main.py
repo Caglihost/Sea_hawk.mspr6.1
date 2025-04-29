@@ -15,7 +15,7 @@ import shutil # Importation du module shutil pour les opérations de fichiers
 import sys  # Nécessaire pour lancer update.py et quitter l'application
 
 # Application version
-APP_VERSION = "1.2.9"
+APP_VERSION = "1.2.10"
 
 def check_for_update():
     url = "https://192.168.1.3/api/v4/projects/mspr%2FSea_hawk2/releases"
@@ -85,7 +85,7 @@ def perform_update(release_data):
 db_config = {
     "user": "netuser",
     "password": "NetMon123!",
-    "host": "192.168.1.2",
+    "host": "10.10.10.11",
     "port": 3306,
     "database": "network_db"
 }
